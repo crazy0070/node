@@ -1,9 +1,10 @@
 var request = require('request');
+var rp = require('request-promise');
 
+var result = 'none';
 module.exports =  function(app,fs){
-	
-	setInterval(getTestPrice ,5000);
-
+ 
+	setInterval(resultAPI ,5000); 
 	// app.get('/',function(req,res){
 
 		
@@ -32,25 +33,74 @@ module.exports =  function(app,fs){
 	// 	});
 	// });
 
+	function resultAPI(){
+		result = getTestPrice();
+		console.log(result);
+	}
+
 
 	function getTestPrice(){
-		console.log('start...111');
+		result ='none';
 		var base_url ='https://api.binance.com/api/v1/ticker/24hr?symbol=ETHBTC';
-		var result ='';
-		request(base_url, function (error, response, body) {
-		  if(error) console.log('error:', error); // Print the error if one occurred
-		  result += body;
-		});
+		var options = {
+	    	uri: base_url, 
+		    headers: {
+		        'User-Agent': 'Request-Promise'
+		    },
+		    json: true // Automatically parses the JSON string in the response
+		};
 
-		console.log('start...222');
+		rp(options)
+		    .then(function (repos) { 
+		        
+		        result += repos;
+		        //console.log(repos);
+		    })
+		    .catch(function (err) {
+		        console.log(err);
+		    });
+
+
 		base_url ='https://crix-api-endpoint.upbit.com/v1/crix/candles/minutes/30?code=CRIX.UPBIT.KRW-ETH&count=1&to=';
-		request(base_url, function (error, response, body) {
-		  if(error) console.log('error:', error); // Print the error if one occurred
-		  result += body;
-		});
-		console.log('end...'+result);
+		
+		options = {
+	    	uri: base_url, 
+		    headers: {
+		        'User-Agent': 'Request-Promise'
+		    },
+		    json: true // Automatically parses the JSON string in the response
+		};
+
+		rp(options)
+		    .then(function (repos) { 
+
+		        result += repos;
+		        //console.log(repos);
+		    })
+		    .catch(function (err) {
+		        console.log(err);
+		    });
+
 
 		return result;
+		// var base_url ='https://api.binance.com/api/v1/ticker/24hr?symbol=ETHBTC';
+		// var result ='';
+		// request(base_url, function (error, response, body) {
+		//   if(error) console.log('error:', error); // Print the error if one occurred
+		//   result += body;
+		//   console.log('11111-1');
+		// });
+
+		// console.log('start...222');
+		// base_url ='https://crix-api-endpoint.upbit.com/v1/crix/candles/minutes/30?code=CRIX.UPBIT.KRW-ETH&count=1&to=';
+		// request(base_url, function (error, response, body) {
+		//   if(error) console.log('error:', error); // Print the error if one occurred
+		//   result += body;
+		//   console.log('22222-2');
+		// });
+		// console.log('end...'+result);
+
+		//return result;
 
 
 	}
