@@ -4,10 +4,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var fs = require('fs');
 var request = require('request');
-
-
-
-
+ 
 
 app.set('veiws',__dirname+'/views');
 app.set('view engine', 'ejs');
@@ -20,5 +17,7 @@ app.use(bodyParser.urlencoded());
 var server =  app.listen(3000, () => {
 	console.log('server started!!!');
 });
+var coin = {};  
+var router = require('./router/main')(app,fs,coin);
 
-var router = require('./router/main')(app,fs);
+console.log(coin);
