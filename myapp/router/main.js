@@ -16,8 +16,20 @@ var upbitCoinList = ['KRW-EOS','KRW-TRX','KRW-BTC','KRW-ADA','KRW-STEEM','KRW-GT
 'KRW-XMR','KRW-WAVES','KRW-ETC','KRW-OMG','KRW-XEM','KRW-BTG','KRW-MCO','KRW-STORJ','KRW-POWR',
 'KRW-LTC','KRW-LSK','KRW-KMD','KRW-STRAT','KRW-PIVX','KRW-ARK','KRW-MTL','KRW-DASH','KRW-ZEC'];
  
-var coin = {}; 
-var result ={};
+/* var binaceCoinList = ['EOSBTC','TRXBTC','BTCUSDT'];
+
+var upbitCoinList = ['KRW-EOS','KRW-TRX'];
+ */
+
+var coin = {};  
+var coins = new Array();
+var data = {};
+/*
+coins.coinInfo.sort(function (a, b) { 
+		return a.price < b.price ? -1 : a.price > b.price ? 1 : 0;  
+});
+  */
+ 
 /*var result ={ 'symbol': '',
 			   'list' :[ 'krw' ,'usd', 'btc', 'krwusd','premium']			   
 			}; */
@@ -28,9 +40,10 @@ var result ={};
 module.exports =  function(app,fs,coin){
  	
 
-	setInterval(getTestPrice ,3000);   
+	setInterval(getTestPrice ,3500);   
 
-	function getTestPrice(){ 
+	 
+	 function getTestPrice(){ 
 		var base_url; 
 
 		base_url ='https://quotation-api-cdn.dunamu.com/v1/forex/recent?codes=FRX.KRWUSD'; 
@@ -97,7 +110,7 @@ module.exports =  function(app,fs,coin){
 		
 		}
 		console.log('');  
-		
+		/*var coins = {};
 		for(var b=0;b<upbitCoinList.length;b++){
 			 var code = upbitCoinList[b].substr(upbitCoinList[b].lastIndexOf('-')+1);
 			 var list ={};
@@ -112,15 +125,51 @@ module.exports =  function(app,fs,coin){
 			 list['BTC']=BTC; //바이낸스 BTC
 			 list['KRWUSD']= KRWUSD; // 바이낸스 원화
 			 list['PREMIUM']= KRW - KRWUSD +' ('+ (((KRW - KRWUSD)/KRWUSD) * 100).toFixed(2)+'%)'; // 프리미엄 
-			 result[code] = list;
-		}
-		console.log(result);  
+			 coins[code] = list;
+		} */
+
+		
+		for(var b=0;b<upbitCoinList.length;b++){
+			  
+			 var code = upbitCoinList[b].substr(upbitCoinList[b].lastIndexOf('-')+1);
+			 var list ={};
+			 var KRW = coin['KRW-'+code]; //업비트 원화
+			 var BTC = coin[code+'BTC']; //바이낸스 BTC			 
+			 var USD = (BTC * coin['BTCUSDT']).toFixed(2); //바이낸스 달라
+			 var KRWUSD = Math.round(BTC * coin['BTCUSDT'] * coin['KRWUSD']); // 바이낸스 원화
+			 var PREMIUM = Math.round(KRW - KRWUSD);
+			 var PREMIUM_PERCENT = (((KRW - KRWUSD)/KRWUSD) * 100).toFixed(2);
+ 
+			 list['SYMBOL']=code; 
+			 list['KRW']=KRW; //업비트 원화
+			 list['USD']=USD; //바이낸스 달라
+			 list['BTC']=BTC; //바이낸스 BTC
+			 list['KRWUSD']= KRWUSD; // 바이낸스 원화
+			 list['PREMIUM']= PREMIUM; // 프리미엄
+			 list['PREMIUM_PERCENT']= PREMIUM_PERCENT; // 프리미엄 퍼센트
+			 
+			 coins[b] = list;
+		
+		} 
+
+		 coins.sort(function(a, b) { // 오름차순
+		    return b.PREMIUM_PERCENT - a.PREMIUM_PERCENT ;
+		    // 13, 21, 25, 44
+		});
+ 
+		//var jsonArray = JSON.parse(JSON.stringify(coins));
+		//console.log(jsonArray); 
+		console.log(coins); 
+		app.get('/api',function(req,res){
+			res.json({'coins':coins,'BTCUSDT':coin['BTCUSDT'],'KRWUSD':coin['KRWUSD']}); 
+		});
+
 		app.get('/',function(req,res){
-			res.send(result);
+			res.render('index');
 		});
    		
 
 	} 
-
+ 
 
 }
