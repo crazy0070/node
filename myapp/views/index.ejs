@@ -80,10 +80,10 @@
 					   		td = '<tr>';
 					   }
 
-					   td += '<td>' + (k, result.coins[k].SYMBOL) + '</td>';
-					   td += '<td>' +setComma((k, result.coins[k].KRW))  +'원'+ '</td>';
+					   td += '<td onclick="copyToClipboard(\''+(k, result.coins[k].SYMBOL)+'\');">' + (k, result.coins[k].SYMBOL) + '</td>';
+					   td += '<td onclick="copyToClipboard(\''+(k, result.coins[k].KRW)+'\');">' +setComma((k, result.coins[k].KRW))  +'원'+ '</td>';
 					   td += '<td>' +'$'+setComma((k, result.coins[k].USD) ) + '</td>';
-					   td += '<td>' +(k, result.coins[k].BTC)  + '</td>';
+					   td += '<td onclick="copyToClipboard(\''+(k, result.coins[k].BTC)+'\');">' +(k, result.coins[k].BTC)  + '</td>';
 					   td += '<td>' +setComma((k, result.coins[k].KRWUSD) ) +'원'+ '</td>';
 					   td += '<td>' +(k, result.coins[k].PREMIUM) +  '('+(k, result.coins[k].PREMIUM_PERCENT)+'%)' + '</td>';
 					   td += '</tr>';
@@ -142,7 +142,17 @@
 		$('#upbitNowPer2').text( ((afterPrice -  orgPrice) / orgPrice * 100).toFixed(2) );
 		$('#nowPrice2').text(  setComma(Math.round(afterPrice -  orgPrice)));
 	}
- 	
+
+	function copyToClipboard(val) {
+	  var t = document.createElement("textarea");
+	  document.body.appendChild(t);
+	  t.value = val;
+	  t.select();
+	  document.execCommand('copy');
+	  document.body.removeChild(t);
+	}
+	
+	 
 	
 	</script>
  
@@ -156,31 +166,7 @@
  
 		<div id='result' style='display:inline;float:left;width:700px'>  
 		</div>
-		<div id='calc' style='display:inline;float:left;width:600px'> 
-			<!-- 투자금: <input type='text' id='principal' value='500'/>만원 <span id='per'></span> <br><br>  
-			#업비트에서 바이낸스까지 보내지는 과정에서 구매한 코인의 업비트 시세 변동정보 <br> 
-			업비트코인 구매코인 심볼입력 : <input type='text' id='upbitCoin' value=''/> <br> 
-			구매가격입력 : <input type='text' id='upbitBuyPrice' value='' /> <button onclick="getBuyInfo();"> 구매하기 </button> <br>
-			구매수량: <input type='text' id='upbitCoinCnt' value=''  /> <br>
-			현재가격:<span id='upbitNowPrice'></span> <br>
-			수익률(<span id='upbitNowPer'></span>%) 차액 (<span id='nowPrice'></span>) <br><br>
-			
-			#업비트에서 바이낸스로 보낸코인 팔기 <br>
-			
-			판매가격: <input type='text' id='sellPrice' value=''/> <button onclick="getBitCoin();"> 비트로 판매하기 </button> <br>
-			판매 후 비트코인수: <input type='text' id='binaceBitCnt' value=''/> <br><br> 
-			
-			#바이내스에서 업비트까지 보내지는 과정에서 구매한 코인의 업비트 시세 변동정보 <br> 
-			바이낸스 구매코인 심볼입력: <input type='text' id='binanceCoin' value=''/> <br> 
-			구매가격: <input type='text' id='binaceBuyPrice' value='' /> <button onclick="getBuyBinaceInfo();"> 구매하기 </button>  <br>
-			구매수량: <input type='text' id='binaceCoinCnt' value=''  /> <br>
-			현재가격:<span id='upbitNowPrice2'></span> <br>
-			현재가치: <span id='nowUpbitPrice'></span> 수익률(<span id='upbitNowPer1'></span>%) 차액 (<span id='nowPrice1'></span>) <br><br>
-			
-			판매가격: <input type='text' id='sellPrice2' value=''/>   <button onclick="getResult();"> 업비트 판매 </button><br>
-			환수금:<span id='resultPrice'></span> <br>
-			수익률(<span id='upbitNowPer2'></span>%) 차액 (<span id='nowPrice2'></span>) <br><br>
-				 -->
+		<div id='calc' style='display:inline;float:left;width:600px'>  
 			<div style='margin:auto;width:580px'> 
 				<table class="blueTable" style=" width: 560px;">
 				<thead>
@@ -244,7 +230,7 @@
 
 				</tbody>
 				</tr>
-				</table>
+				</table> 
 			</div>
 		</div>
 	</div>
